@@ -450,6 +450,95 @@ protected:
     Command *copy() { return new HttpCommand(*this); }
 };
 
+// queue commands
+class LEnqueueCommand : public Command
+{
+public:
+    LEnqueueCommand(_NAN_METHOD_ARGS, lcb_storage_t sop, int mode)
+        : Command(args, mode), op(sop) { }
+
+    static bool handleSingle(Command*, CommandKey&,
+                             Handle<Value>, unsigned int);
+
+    lcb_error_t execute(lcb_t);
+    virtual Command* copy() { return new LEnqueueCommand(*this); }
+
+protected:
+    lcb_storage_t op;
+    CommandList<lcb_store_cmd_t> commands;
+    StoreOptions globalOptions;
+    ItemHandler getHandler() const { return handleSingle; }
+    Parameters* getParams() { return &globalOptions; }
+    virtual bool initCommandList() {
+        return commands.initialize(keys.size());
+    }
+};
+
+class LRemoveCommand : public Command
+{
+public:
+    LRemoveCommand(_NAN_METHOD_ARGS, lcb_storage_t sop, int mode)
+        : Command(args, mode), op(sop) { }
+
+    static bool handleSingle(Command*, CommandKey&,
+                             Handle<Value>, unsigned int);
+
+    lcb_error_t execute(lcb_t);
+    virtual Command* copy() { return new LRemoveCommand(*this); }
+
+protected:
+    lcb_storage_t op;
+    CommandList<lcb_store_cmd_t> commands;
+    StoreOptions globalOptions;
+    ItemHandler getHandler() const { return handleSingle; }
+    Parameters* getParams() { return &globalOptions; }
+    virtual bool initCommandList() {
+        return commands.initialize(keys.size());
+    }
+};
+
+class LGetCommand : public Command
+{
+
+public:
+    CTOR_COMMON(GetCommand)
+    lcb_error_t execute(lcb_t);
+    static bool handleSingle(Command *,
+                             CommandKey&, Handle<Value>, unsigned int);
+
+    virtual Command* copy() { return new LGetCommand(*this); }
+
+protected:
+    Parameters* getParams() { return &globalOptions; }
+    GetOptions globalOptions;
+    CommandList<lcb_get_cmd_t> commands;
+    ItemHandler getHandler() const { return handleSingle; }
+    virtual bool initCommandList() {
+        return commands.initialize(keys.size());
+    }
+};
+
+class LDequeueCommand : public Command
+{
+
+public:
+    CTOR_COMMON(GetCommand)
+    lcb_error_t execute(lcb_t);
+    static bool handleSingle(Command *,
+                             CommandKey&, Handle<Value>, unsigned int);
+
+    virtual Command* copy() { return new LDequeueCommand(*this); }
+
+protected:
+    Parameters* getParams() { return &globalOptions; }
+    GetOptions globalOptions;
+    CommandList<lcb_get_cmd_t> commands;
+    ItemHandler getHandler() const { return handleSingle; }
+    virtual bool initCommandList() {
+        return commands.initialize(keys.size());
+    }
+};
+
 }
 
 #endif

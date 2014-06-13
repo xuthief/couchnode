@@ -631,4 +631,88 @@ Cookie *HttpCommand::createCookie()
     return cookie;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// LENQUEUE                                                                 ///
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+bool LEnqueueCommand::handleSingle(Command *p, CommandKey &ki,
+                                Handle<Value> params, unsigned int ix)
+{
+    LEnqueueCommand *ctx = static_cast<LEnqueueCommand *>(p);
+    lcb_store_cmd_t *cmd = ctx->commands.getAt(ix);
+    StoreOptions kOptions;
+
+    if (!params.IsEmpty()) {
+        if (!kOptions.parseObject(params.As<Object>(), ctx->err)) {
+            return false;
+        }
+        kOptions.isInitialized = true;
+
+    } else {
+        ctx->err.eArguments("Must have options for lenqueue", params);
+        return false;
+    }
+
+
+    char *vbuf;
+    size_t nvbuf;
+    Handle<Value> s = kOptions.value.v;
+    ki.setKeyV0(cmd);
+
+    ValueFormat::Spec spec;
+    Handle<Value> specObj;
+    if (kOptions.format.isFound()) {
+        specObj = kOptions.format.v;
+    } else {
+        specObj = ctx->globalOptions.format.v;
+    }
+
+    spec = ValueFormat::toSpec(specObj, ctx->err);
+    if (spec == ValueFormat::INVALID) {
+        return false;
+    }
+
+    if (!ValueFormat::encode(s, spec, ctx->bufs,
+                             &cmd->v.v0.flags, &vbuf, &nvbuf, ctx->err)) {
+        return false;
+    }
+
+    cmd->v.v0.bytes = vbuf;
+    cmd->v.v0.nbytes = nvbuf;
+    cmd->v.v0.cas = kOptions.cas.v;
+    cmd->v.v0.operation = LCB_LENQUEUE;
+
+    // exptime
+    if (kOptions.exp.isFound()) {
+        cmd->v.v0.exptime = kOptions.exp.v;
+    } else {
+        cmd->v.v0.exptime = ctx->globalOptions.exp.v;
+    }
+
+    // flags override
+    if (kOptions.flags.isFound()) {
+        cmd->v.v0.flags = kOptions.flags.v;
+    }
+
+    cmd->v.v0.operation = ctx->op;
+    return true;
+}
+
+lcb_error_t LEnqueueCommand::execute(lcb_t instance)
+{
+    return lcb_store(instance, cookie, commands.size(), commands.getList());
+}
+
+bool StoreOptions::parseObject(const Handle<Object> options, CBExc &ex)
+{
+    ParamSlot *spec[] = { &cas, &exp, &format, &value, &flags };
+    if (!ParamSlot::parseAll(options, spec, 5, ex)) {
+        return false;
+    }
+
+    return true;
+}
+
+
 }
