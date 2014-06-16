@@ -206,6 +206,12 @@ extern "C" {
         } v;
     };
 
+    typedef enum {
+        LCB_GET = 0x00,
+        LCB_LGET = 0x01,
+        LCB_LDEQUEUE = 0x02
+    } lcb_get_t;
+
 #define LCB_G_C_ST_ID 2
 #define LCB_G_C_ST_V 0
     typedef struct lcb_get_cmd_st {
@@ -220,6 +226,7 @@ extern "C" {
                 int lock;
                 const void *hashkey;
                 lcb_size_t nhashkey;
+                lcb_get_t gettype;
             } v0;
         } v;
 #ifdef __cplusplus
@@ -242,6 +249,7 @@ extern "C" {
             v.v0.lock = lock;
             v.v0.hashkey = NULL;
             v.v0.nhashkey = 0;
+            v.v0.gettype = LCB_GET;
         }
 #endif
     } lcb_get_cmd_t;

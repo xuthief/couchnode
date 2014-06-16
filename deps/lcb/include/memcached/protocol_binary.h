@@ -171,6 +171,13 @@ extern "C"
 
         PROTOCOL_BINARY_CMD_LAST_RESERVED = 0x8f,
 
+        /* Queue ops */
+        PROTOCOL_BINARY_CMD_LENQUEUE = 0xd1,
+        PROTOCOL_BINARY_CMD_LDEQUEUE = 0xd2,
+        PROTOCOL_BINARY_CMD_LREMOVE = 0xd3,
+        PROTOCOL_BINARY_CMD_LGET = 0xd4,
+        PROTOCOL_BINARY_CMD_FSET = 0xe1,
+
         /* Scrub the data */
         PROTOCOL_BINARY_CMD_SCRUB = 0xf0,
         /* Refresh the ISASL data */

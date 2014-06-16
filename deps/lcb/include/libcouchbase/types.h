@@ -73,7 +73,12 @@ extern "C" {
         /** Append this object to the existing object */
         LCB_APPEND = 0x04,
         /** Prepend this  object to the existing object */
-        LCB_PREPEND = 0x05
+        LCB_PREPEND = 0x05,
+
+        /** For queue ops */
+        LCB_LENQUEUE = 0x07,
+        LCB_LREMOVE = 0x08,
+
     } lcb_storage_t;
 
     /**

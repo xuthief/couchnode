@@ -681,7 +681,6 @@ bool LEnqueueCommand::handleSingle(Command *p, CommandKey &ki,
     cmd->v.v0.bytes = vbuf;
     cmd->v.v0.nbytes = nvbuf;
     cmd->v.v0.cas = kOptions.cas.v;
-    cmd->v.v0.operation = LCB_LENQUEUE;
 
     // exptime
     if (kOptions.exp.isFound()) {
@@ -695,23 +694,13 @@ bool LEnqueueCommand::handleSingle(Command *p, CommandKey &ki,
         cmd->v.v0.flags = kOptions.flags.v;
     }
 
-    cmd->v.v0.operation = ctx->op;
+    cmd->v.v0.operation = LCB_LENQUEUE;
     return true;
 }
 
 lcb_error_t LEnqueueCommand::execute(lcb_t instance)
 {
     return lcb_store(instance, cookie, commands.size(), commands.getList());
-}
-
-bool StoreOptions::parseObject(const Handle<Object> options, CBExc &ex)
-{
-    ParamSlot *spec[] = { &cas, &exp, &format, &value, &flags };
-    if (!ParamSlot::parseAll(options, spec, 5, ex)) {
-        return false;
-    }
-
-    return true;
 }
 
 

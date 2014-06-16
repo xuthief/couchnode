@@ -237,6 +237,7 @@ static lcb_error_t single_get(lcb_t instance,
     const void *key = item->v.v0.key;
     lcb_size_t nkey = item->v.v0.nkey;
     lcb_time_t exp = item->v.v0.exptime;
+    lcb_get_t gettype = item->v.v0.gettype;
 
     /* we need a vbucket config before we can start getting data.. */
     if (instance->vbucket_config == NULL) {
@@ -271,7 +272,17 @@ static lcb_error_t single_get(lcb_t instance,
     req.message.header.request.opaque = ++instance->seqno;
 
     if (!exp) {
-        req.message.header.request.opcode = PROTOCOL_BINARY_CMD_GET;
+        switch (gettype) {
+            case LCB_LGET:
+                req.message.header.request.opcode = PROTOCOL_BINARY_CMD_LGET;
+                break;
+            case LCB_LDEQUEUE:
+                req.message.header.request.opcode = PROTOCOL_BINARY_CMD_LDEQUEUE;
+                break;
+            default:
+                req.message.header.request.opcode = PROTOCOL_BINARY_CMD_GET;
+                break;
+        }
         nbytes = sizeof(req.bytes) - 4;
     } else {
         req.message.header.request.opcode = PROTOCOL_BINARY_CMD_GAT;
@@ -331,6 +342,7 @@ static lcb_error_t multi_get(lcb_t instance,
         lcb_size_t nreq = sizeof(req.bytes);
         vbcheck_keyinfo *ki = vbc.ptr_ki + ii;
         lcb_server_t *server = instance->servers + ki->ix;
+        lcb_get_t gettype = items[ii]->v.v0.gettype;
 
         memset(&req, 0, sizeof(req));
         req.message.header.request.magic = PROTOCOL_BINARY_REQ;
@@ -341,7 +353,17 @@ static lcb_error_t multi_get(lcb_t instance,
         req.message.header.request.opaque = ++instance->seqno;
 
         if (!exp) {
-            req.message.header.request.opcode = PROTOCOL_BINARY_CMD_GETQ;
+            switch (gettype) {
+                case LCB_LGET:
+                    req.message.header.request.opcode = PROTOCOL_BINARY_CMD_LGET;
+                    break;
+                case LCB_LDEQUEUE:
+                    req.message.header.request.opcode = PROTOCOL_BINARY_CMD_LDEQUEUE;
+                    break;
+                default:
+                    req.message.header.request.opcode = PROTOCOL_BINARY_CMD_GETQ;
+                    break;
+            }
             nreq -= 4;
         } else {
             req.message.header.request.opcode = PROTOCOL_BINARY_CMD_GATQ;

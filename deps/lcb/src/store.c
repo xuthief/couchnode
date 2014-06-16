@@ -101,6 +101,12 @@ lcb_error_t lcb_store(lcb_t instance,
             req.message.header.request.extlen = 0;
             headersize -= 8;
             break;
+        case LCB_LENQUEUE:
+            req.message.header.request.opcode = PROTOCOL_BINARY_CMD_LENQUEUE;
+            break;
+        case LCB_LREMOVE:
+            req.message.header.request.opcode = PROTOCOL_BINARY_CMD_LREMOVE;
+            break;
         default:
             /* We were given an unknown storage operation. */
             return lcb_synchandler_return(instance,

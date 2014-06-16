@@ -606,6 +606,12 @@ static void store_response_handler(lcb_server_t *server, packet_info *info)
     case PROTOCOL_BINARY_CMD_PREPEND:
         op = LCB_PREPEND;
         break;
+    case PROTOCOL_BINARY_CMD_LENQUEUE:
+        op = LCB_LENQUEUE;
+        break;
+    case PROTOCOL_BINARY_CMD_LREMOVE:
+        op = LCB_LREMOVE;
+        break;
     default:
         /*
         ** It is impossible to get here (since we're called from our
@@ -1039,6 +1045,8 @@ int lcb_dispatch_response(lcb_server_t *c, packet_info *info)
     case PROTOCOL_BINARY_CMD_GET:
     case PROTOCOL_BINARY_CMD_GAT:
     case CMD_GET_LOCKED:
+    case PROTOCOL_BINARY_CMD_LDEQUEUE:
+    case PROTOCOL_BINARY_CMD_LGET:
         getq_response_handler(c, info);
         break;
     case CMD_GET_REPLICA:
@@ -1058,6 +1066,8 @@ int lcb_dispatch_response(lcb_server_t *c, packet_info *info)
     case PROTOCOL_BINARY_CMD_SET:
     case PROTOCOL_BINARY_CMD_APPEND:
     case PROTOCOL_BINARY_CMD_PREPEND:
+    case PROTOCOL_BINARY_CMD_LENQUEUE:
+    case PROTOCOL_BINARY_CMD_LREMOVE:
         store_response_handler(c, info);
         break;
 

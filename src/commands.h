@@ -474,6 +474,7 @@ protected:
     }
 };
 
+/*
 class LRemoveCommand : public Command
 {
 public:
@@ -538,6 +539,7 @@ protected:
         return commands.initialize(keys.size());
     }
 };
+*/
 
 }
 
