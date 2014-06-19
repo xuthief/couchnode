@@ -639,6 +639,7 @@ Cookie *HttpCommand::createCookie()
 bool LEnqueueCommand::handleSingle(Command *p, CommandKey &ki,
                                 Handle<Value> params, unsigned int ix)
 {
+    printf("%s:%d:%s\n", __FILE__, __LINE__, __func__);
     LEnqueueCommand *ctx = static_cast<LEnqueueCommand *>(p);
     lcb_store_cmd_t *cmd = ctx->commands.getAt(ix);
     StoreOptions kOptions;
@@ -653,7 +654,6 @@ bool LEnqueueCommand::handleSingle(Command *p, CommandKey &ki,
         ctx->err.eArguments("Must have options for lenqueue", params);
         return false;
     }
-
 
     char *vbuf;
     size_t nvbuf;

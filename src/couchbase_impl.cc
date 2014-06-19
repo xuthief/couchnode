@@ -115,6 +115,7 @@ void CouchbaseImpl::Init(Handle<Object> target)
     NODE_SET_PROTOTYPE_METHOD(t, "replaceMulti", ReplaceMulti);
     NODE_SET_PROTOTYPE_METHOD(t, "appendMulti", AppendMulti);
     NODE_SET_PROTOTYPE_METHOD(t, "prependMulti", PrependMulti);
+    NODE_SET_PROTOTYPE_METHOD(t, "lenqueueMulti", LenqueueMulti);
     NODE_SET_PROTOTYPE_METHOD(t, "getMulti", GetMulti);
     NODE_SET_PROTOTYPE_METHOD(t, "getReplicaMulti", GetReplicaMulti);
     NODE_SET_PROTOTYPE_METHOD(t, "touchMulti", TouchMulti);
@@ -429,6 +430,13 @@ DEFINE_STOREOP(Add, LCB_ADD)
 DEFINE_STOREOP(Replace, LCB_REPLACE)
 DEFINE_STOREOP(Append, LCB_APPEND)
 DEFINE_STOREOP(Prepend, LCB_PREPEND)
+
+NAN_METHOD(CouchbaseImpl::LenqueueMulti)
+{
+    NanScope();
+    LEnqueueCommand op(args, LCB_LENQUEUE, ARGMODE_MULTI);
+    NanReturnValue(makeOperation(args, op));
+}
 
 NAN_METHOD(CouchbaseImpl::GetMulti)
 {

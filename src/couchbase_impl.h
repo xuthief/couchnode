@@ -119,6 +119,7 @@ public:
     static NAN_METHOD(AddMulti);
     static NAN_METHOD(AppendMulti);
     static NAN_METHOD(PrependMulti);
+    static NAN_METHOD(LenqueueMulti);
     static NAN_METHOD(RemoveMulti);
     static NAN_METHOD(ArithmeticMulti);
     static NAN_METHOD(TouchMulti);
