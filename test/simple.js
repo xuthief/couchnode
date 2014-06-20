@@ -35,7 +35,6 @@ var high = number.shiftRight(32).toNumber();
 buf.writeUInt32BE(high, 0);
 console.log(high, ": ", high.toString(16), ": ", buf);
 
-return;
 */
 
 var couchbase = require('../lib/couchbase.js');
@@ -54,15 +53,56 @@ var db = new couchbase.Connection({host:"192.168.2.155:8091", bucket: "default"}
   db.lenqueue(key, bignum("FFFFFFFE00000001", 16), function(err, result) {
     if (err) throw err;
     console.log("lenqueue succ");
-    db.get(key, function(err, result) {
+    db.lget(key, function(err, result) {
       if (err) throw err;
       console.log(result.value);
       db.lremove(key, bignum("FFFFFFFE00000001", 16), function(err, result) {
           if (err) throw err;
           console.log("lremove succ");
-          db.get(key, function(err, result) {
+          db.lget(key, function(err, result) {
+              console.log(err, result.value);
+          });
+      });
+    });
+  });
+
+  var key2 = 'ldequeue1';
+  db.lenqueue(key2, bignum("FFFFFFFE00000002", 16), function(err, result) {
+    if (err) throw err;
+    console.log("lenqueue succ");
+    db.get(key2, function(err, result) {
+      if (err) throw err;
+      console.log(result.value);
+      db.ldequeue(key2, function(err, result) {
+          if (err) throw err;
+          console.log("ldequeue succ");
+          console.log(result.value.toString(16));
+          db.get(key2, function(err, result) {
+              console.log(err, result.value);
+          });
+      });
+    });
+  });
+
+  var key3 = 'lget1';
+  db.lenqueue(key3, bignum("FFFFFFFE00000003", 16), function(err, result) {
+    if (err) throw err;
+    console.log("lenqueue succ");
+    db.lget(key3, function(err, result) {
+      if (err) throw err;
+      console.log("size: ",result.value.length);
+      result.value.forEach(function(element) {
+          console.log(element, element.toString(16));
+      });
+      db.lenqueue(key3, 0x1, function(err, result) {
+          if (err) throw err;
+          console.log("lenqueue succ");
+          db.lget(key3, function(err, result) {
               if (err) throw err;
-              console.log(result.value);
+              console.log("size: ",result.value.length);
+              result.value.forEach(function(element) {
+                  console.log(element, element.toString(16));
+              });
           });
       });
     });
