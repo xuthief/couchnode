@@ -1,5 +1,11 @@
 var bignum = require("bignum");
 
+var num = bignum("FFFFFFFE00000001", 16);
+console.log(num.toString(16));
+console.log((num.add(1)).toString(16));
+
+return;
+
 /*
    var higher = bops.readUInt32BE(buf, parser._pos);
    parser._pos += 4;
