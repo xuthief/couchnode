@@ -50,23 +50,21 @@ var db = new couchbase.Connection({host:"192.168.2.155:8091", bucket: "default"}
       // {name: Frank}
     });
   });
-  var key = 'lenqueue5';
-  db.lenqueue(key, 0xFFFFFFFE, function(err, result) {
-    if (err) throw err;
-    console.log("lenqueue succ");
-    db.get(key, function(err, result) {
-      if (err) throw err;
-      console.log(result.value);
-      // {name: Frank}
-    });
-  });
+  var key = 'lenqueue6';
   db.lenqueue(key, bignum("FFFFFFFE00000001", 16), function(err, result) {
     if (err) throw err;
     console.log("lenqueue succ");
     db.get(key, function(err, result) {
       if (err) throw err;
       console.log(result.value);
-      // {name: Frank}
+      db.lremove(key, bignum("FFFFFFFE00000001", 16), function(err, result) {
+          if (err) throw err;
+          console.log("lremove succ");
+          db.get(key, function(err, result) {
+              if (err) throw err;
+              console.log(result.value);
+          });
+      });
     });
   });
 });

@@ -474,7 +474,6 @@ protected:
     }
 };
 
-/*
 class LRemoveCommand : public Command
 {
 public:
@@ -498,16 +497,16 @@ protected:
     }
 };
 
-class LGetCommand : public Command
+class LdequeueCommand : public Command
 {
 
 public:
-    CTOR_COMMON(GetCommand)
+    CTOR_COMMON(LdequeueCommand)
     lcb_error_t execute(lcb_t);
     static bool handleSingle(Command *,
                              CommandKey&, Handle<Value>, unsigned int);
 
-    virtual Command* copy() { return new LGetCommand(*this); }
+    virtual Command* copy() { return new LdequeueCommand(*this); }
 
 protected:
     Parameters* getParams() { return &globalOptions; }
@@ -519,16 +518,16 @@ protected:
     }
 };
 
-class LDequeueCommand : public Command
+class LgetCommand : public Command
 {
 
 public:
-    CTOR_COMMON(GetCommand)
+    CTOR_COMMON(LgetCommand)
     lcb_error_t execute(lcb_t);
     static bool handleSingle(Command *,
                              CommandKey&, Handle<Value>, unsigned int);
 
-    virtual Command* copy() { return new LDequeueCommand(*this); }
+    virtual Command* copy() { return new LgetCommand(*this); }
 
 protected:
     Parameters* getParams() { return &globalOptions; }
@@ -539,8 +538,6 @@ protected:
         return commands.initialize(keys.size());
     }
 };
-*/
-
 }
 
 #endif

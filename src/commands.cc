@@ -639,7 +639,6 @@ Cookie *HttpCommand::createCookie()
 bool LEnqueueCommand::handleSingle(Command *p, CommandKey &ki,
                                 Handle<Value> params, unsigned int ix)
 {
-    printf("%s:%d:%s\n", __FILE__, __LINE__, __func__);
     LEnqueueCommand *ctx = static_cast<LEnqueueCommand *>(p);
     lcb_store_cmd_t *cmd = ctx->commands.getAt(ix);
     StoreOptions kOptions;
@@ -703,5 +702,174 @@ lcb_error_t LEnqueueCommand::execute(lcb_t instance)
     return lcb_store(instance, cookie, commands.size(), commands.getList());
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// LREMOVE                                                                  ///
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+bool LRemoveCommand::handleSingle(Command *p, CommandKey &ki,
+                                Handle<Value> params, unsigned int ix)
+{
+    LRemoveCommand *ctx = static_cast<LRemoveCommand *>(p);
+    lcb_store_cmd_t *cmd = ctx->commands.getAt(ix);
+    StoreOptions kOptions;
+
+    if (!params.IsEmpty()) {
+        if (!kOptions.parseObject(params.As<Object>(), ctx->err)) {
+            return false;
+        }
+        kOptions.isInitialized = true;
+
+    } else {
+        ctx->err.eArguments("Must have options for lremove", params);
+        return false;
+    }
+
+    char *vbuf;
+    size_t nvbuf;
+    Handle<Value> s = kOptions.value.v;
+    ki.setKeyV0(cmd);
+
+    ValueFormat::Spec spec;
+    Handle<Value> specObj;
+    if (kOptions.format.isFound()) {
+        specObj = kOptions.format.v;
+    } else {
+        specObj = ctx->globalOptions.format.v;
+    }
+
+    spec = ValueFormat::toSpec(specObj, ctx->err);
+    if (spec == ValueFormat::INVALID) {
+        return false;
+    }
+
+    if (!ValueFormat::encode(s, spec, ctx->bufs,
+                             &cmd->v.v0.flags, &vbuf, &nvbuf, ctx->err)) {
+        return false;
+    }
+
+    cmd->v.v0.bytes = vbuf;
+    cmd->v.v0.nbytes = nvbuf;
+    cmd->v.v0.cas = kOptions.cas.v;
+
+    // exptime
+    if (kOptions.exp.isFound()) {
+        cmd->v.v0.exptime = kOptions.exp.v;
+    } else {
+        cmd->v.v0.exptime = ctx->globalOptions.exp.v;
+    }
+
+    // flags override
+    if (kOptions.flags.isFound()) {
+        cmd->v.v0.flags = kOptions.flags.v;
+    }
+
+    cmd->v.v0.operation = LCB_LREMOVE;
+    return true;
+}
+
+lcb_error_t LRemoveCommand::execute(lcb_t instance)
+{
+    return lcb_store(instance, cookie, commands.size(), commands.getList());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// Ldequeue                                                                 ///
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+bool LdequeueCommand::handleSingle(Command *p,
+                              CommandKey &ki,
+                              Handle<Value> params, unsigned int ix)
+{
+    LdequeueCommand *ctx = static_cast<LdequeueCommand *>(p);
+    GetOptions kOptions;
+
+    if (params.IsEmpty() == false && params->IsObject()) {
+        if (!kOptions.parseObject(params.As<Object>(), ctx->err)) {
+            return false;
+        }
+    }
+
+    kOptions.merge(ctx->globalOptions);
+
+    lcb_get_cmd_st *cmd = ctx->commands.getAt(ix);
+    ki.setKeyV0(cmd);
+
+    if (kOptions.lockTime.isFound()) {
+        cmd->v.v0.exptime = kOptions.lockTime.v;
+        cmd->v.v0.lock = 1;
+
+    } else {
+        cmd->v.v0.exptime = kOptions.expTime.v;
+    }
+
+    cmd->v.v0.gettype = LCB_LDEQUEUE;
+
+    if (kOptions.format.isFound()) {
+        ValueFormat::Spec spec = ValueFormat::toSpec(kOptions.format.v, ctx->err);
+        // ignore auto so the handler uses the incoming flags
+        if (spec != ValueFormat::AUTO) {
+            ctx->setCookieKeyOption(ki.getObject(), Number::New(spec));
+        }
+    }
+
+    return true;
+}
+
+lcb_error_t LdequeueCommand::execute(lcb_t instance)
+{
+    return lcb_get(instance, cookie, commands.size(), commands.getList());
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// Lget                                                                     ///
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+bool LgetCommand::handleSingle(Command *p,
+                              CommandKey &ki,
+                              Handle<Value> params, unsigned int ix)
+{
+    LgetCommand *ctx = static_cast<LgetCommand *>(p);
+    GetOptions kOptions;
+
+    if (params.IsEmpty() == false && params->IsObject()) {
+        if (!kOptions.parseObject(params.As<Object>(), ctx->err)) {
+            return false;
+        }
+    }
+
+    kOptions.merge(ctx->globalOptions);
+
+    lcb_get_cmd_st *cmd = ctx->commands.getAt(ix);
+    ki.setKeyV0(cmd);
+
+    if (kOptions.lockTime.isFound()) {
+        cmd->v.v0.exptime = kOptions.lockTime.v;
+        cmd->v.v0.lock = 1;
+
+    } else {
+        cmd->v.v0.exptime = kOptions.expTime.v;
+    }
+
+    cmd->v.v0.gettype = LCB_LGET;
+
+    if (kOptions.format.isFound()) {
+        ValueFormat::Spec spec = ValueFormat::toSpec(kOptions.format.v, ctx->err);
+        // ignore auto so the handler uses the incoming flags
+        if (spec != ValueFormat::AUTO) {
+            ctx->setCookieKeyOption(ki.getObject(), Number::New(spec));
+        }
+    }
+
+    return true;
+}
+
+lcb_error_t LgetCommand::execute(lcb_t instance)
+{
+    return lcb_get(instance, cookie, commands.size(), commands.getList());
+}
 
 }
