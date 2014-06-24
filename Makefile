@@ -27,6 +27,9 @@ node_modules:
 test: node_modules
 	./node_modules/mocha/bin/mocha
 
+stest: node_modules
+	for f in lenqueue lget ldequeue lremove; do node s_test/$$f.js; echo $$f; done 
+
 lint: node_modules
 	./node_modules/jshint/bin/jshint lib/*.js
 

@@ -7,7 +7,7 @@
  * To Run from command line: node bench <clients> <command> <requests>
  */
 var couchbase = require('../lib/couchbase.js'),
-    cb_config = { host :  [ "localhost:8091" ],
+    cb_config = { host :  [ "192.168.2.155:8091" ],
         bucket : "default"
     },
     bench_config = { verbose : false, /* print response times */
@@ -42,14 +42,38 @@ var get_test = function(type){
         case "GET":
             return function(client, callback){
                 client.get("key" + Math.random(),function(){
-                        callback();
-                        });
+                    callback();
+                });
             }
         case "SET":
             return function(client, callback){
                 client.set("key"+ Math.random(), "value"+ Math.random(), function(){
-                        callback();
-                        });
+                    callback();
+                });
+            }
+        case "LENQUEUE":
+            return function(client, callback){
+                client.lenqueue("key"+ Math.random(), Math.random(), function(){
+                    callback();
+                });
+            }
+        case "LREMOVE":
+            return function(client, callback){
+                client.lremove("key"+ Math.random(), Math.random(), function(){
+                    callback();
+                });
+            }
+        case "LDEQUEUE":
+            return function(client, callback){
+                client.ldequeue("key"+ Math.random(), function(){
+                    callback();
+                });
+            }
+        case "LGET":
+            return function(client, callback){
+                client.lget("key"+ Math.random(), function(){
+                    callback();
+                });
             }
     }
 }
