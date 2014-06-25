@@ -96,6 +96,8 @@ static void failout_single_request(lcb_server_t *server,
     case PROTOCOL_BINARY_CMD_GET:
     case PROTOCOL_BINARY_CMD_GETQ:
     case CMD_GET_REPLICA:
+    case PROTOCOL_BINARY_CMD_LDEQUEUE:
+    case PROTOCOL_BINARY_CMD_LGET:
         setup_lcb_get_resp_t(&resp.get, keyptr, nkey, NULL, 0, 0, 0, 0);
         TRACE_GET_END(req->request.opaque, ntohs(req->request.vbucket),
                       req->request.opcode, error, &resp.get);
