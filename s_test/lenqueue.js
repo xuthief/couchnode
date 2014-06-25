@@ -19,7 +19,7 @@ var db = s_test.testCouchbase(function(err) {
                 enqueueCount ++;
                 if(enqueueCount == s_test.sconfig.keyCount*s_test.sconfig.opsPerKey) {
                     var endTime = Date.now();
-                    console.log("all lenqueue done in:", endTime.getTime() - beginTime.getTime(), "ms");
+		    console.log("all enqueue done in:", endTime - beginTime, "ms");
                     process.exit(0);
                 }
             });

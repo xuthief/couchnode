@@ -18,7 +18,7 @@ var db = s_test.testCouchbase(function(err) {
                 removeCount ++;
                 if(removeCount == s_test.sconfig.keyCount*s_test.sconfig.opsPerKey) {
                     var endTime = Date.now();
-                    console.log("all lremove done in:", endTime.getTime() - beginTime.getTime(), "ms");
+                    console.log("all lremove done in:", endTime - beginTime, "ms");
                     process.exit(0);
                 }
             });

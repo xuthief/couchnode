@@ -16,7 +16,7 @@ var db = s_test.testCouchbase(function(err) {
             dequeueCount ++;
             if(dequeueCount == s_test.sconfig.keyCount) {
                 var endTime = Date.now();
-                console.log("all dequeue done in:", endTime.getTime() - beginTime.getTime(), "ms");
+                console.log("all dequeue done in:", endTime - beginTime, "ms");
                 process.exit(0);
             }
         });
