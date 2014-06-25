@@ -11,7 +11,7 @@ testFunc.push(function(db) {
     // lenqueue
     var enqueueCount = 0;
     for (var i=0; i<s_test.sconfig.keyCount; i++) {
-        var key = s_test.sconfig.keyPrefix + (Math.random() % 10000);
+        var key = s_test.sconfig.keyPrefix + Math.floor(Math.random() * 10000);
         for (var j=0; j<s_test.sconfig.opsPerKey; j++) {
             if(s_test.sconfig.log) console.log("do:", key, i, j);
             db.lenqueue(key, beginValue + j, function(err, result) {
@@ -33,7 +33,7 @@ testFunc.push(function(db) {
     // ldequeue
     var dequeueCount = 0;
     for (var i=0; i<s_test.sconfig.keyCount*s_test.sconfig.opsPerKey; i++) {
-        var key = s_test.sconfig.keyPrefix + (Math.random() % 10000);
+        var key = s_test.sconfig.keyPrefix + Math.floor(Math.random() * 10000);
         db.ldequeue(key, function(err, result) {
             if(s_test.sconfig.log) console.log("done:", key);
             if (err && s_test.sconfig.throwOnError) throw err;
@@ -54,7 +54,7 @@ testFunc.push(function(db) {
     // lremove
     var removeCount = 0;
     for (var i=0; i<s_test.sconfig.keyCount; i++) {
-        var key = s_test.sconfig.keyPrefix + (Math.random() % 10000);
+        var key = s_test.sconfig.keyPrefix + Math.floor(Math.random() * 10000);
         for (var j=0; j<s_test.sconfig.opsPerKey; j++) {
             db.lremove(key, beginValue + j, function(err, result) {
                 if(s_test.sconfig.log) console.log("done:", key);
@@ -76,7 +76,7 @@ testFunc.push(function(db) {
     // lget
     var getCount = 0;
     for (var i=0; i<s_test.sconfig.keyCount*s_test.sconfig.opsPerKey; i++) {
-        var key = s_test.sconfig.keyPrefix + (Math.random() % 10000);
+        var key = s_test.sconfig.keyPrefix + Math.floor(Math.random() * 10000);
         db.lget(key, function(err, result) {
             if(s_test.sconfig.log) console.log("done:", key);
             if (err && s_test.sconfig.throwOnError) throw err;
