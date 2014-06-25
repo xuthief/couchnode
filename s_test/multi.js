@@ -2,6 +2,11 @@ var bignum = require("bignum");
 var s_test = require('../s_test.js');
 
 var testFunc = [];
+var done = false;
+
+function formatDate() {
+    return "[" + new Date() + "] ";
+}
 
 testFunc.push(function(db) {
     var beginValue = s_test.sconfig.clientIndex*s_test.sconfig.keyCount;
@@ -20,7 +25,8 @@ testFunc.push(function(db) {
                 enqueueCount ++;
                 if(enqueueCount == s_test.sconfig.keyCount*s_test.sconfig.opsPerKey) {
                     var endTime = Date.now();
-                    console.log(enqueueCount + " lenqueue ops done in " + (endTime - beginTime) + " ms");
+                    console.log(formatDate() + enqueueCount + " lenqueue ops done in " + (endTime - beginTime) + " ms");
+                    done = true;
                 }
             });
         }
@@ -40,7 +46,8 @@ testFunc.push(function(db) {
             dequeueCount ++;
             if(dequeueCount == s_test.sconfig.keyCount*s_test.sconfig.opsPerKey) {
                 var endTime = Date.now();
-                console.log(dequeueCount + " ldequeue ops done in " + (endTime - beginTime) + " ms");
+                console.log(formatDate() + dequeueCount + " ldequeue ops done in " + (endTime - beginTime) + " ms");
+                done = true;
             }
         });
     }
@@ -62,7 +69,8 @@ testFunc.push(function(db) {
                 removeCount ++;
                 if(removeCount == s_test.sconfig.keyCount*s_test.sconfig.opsPerKey) {
                     var endTime = Date.now();
-                    console.log(removeCount + " lremove ops done in " + (endTime - beginTime) + " ms");
+                    console.log(formatDate() + removeCount + " lremove ops done in " + (endTime - beginTime) + " ms");
+                    done = true;
                 }
             });
         }
@@ -83,7 +91,8 @@ testFunc.push(function(db) {
             getCount ++;
             if(getCount == s_test.sconfig.keyCount*s_test.sconfig.opsPerKey) {
                 var endTime = Date.now();
-                console.log(getCount + " lget ops done in " + (endTime - beginTime) + " ms");
+                console.log(formatDate() + getCount + " lget ops done in " + (endTime - beginTime) + " ms");
+                done = true;
             }
         });
     }
@@ -91,12 +100,16 @@ testFunc.push(function(db) {
 
 var loop = function() {
     setTimeout(function(){
-        testFunc[Math.floor(Math.random()*testFunc.length)](db);
+        if (done) {
+            done = false;
+            testFunc[Math.floor(Math.random()*testFunc.length)](db);
+        }
         loop();
     },1500);
 };
 
 var db = s_test.testCouchbase(function(err) {
     if (err) throw err;
+    done = true;
     loop();
 });
