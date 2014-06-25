@@ -89,10 +89,6 @@ testFunc.push(function(db) {
     }
 });
 
-var db = s_test.testCouchbase(function(err) {
-    if (err) throw err;
-});
-
 var loop = function() {
     setTimeout(function(){
         testFunc[Math.floor(Math.random()*testFunc.length)](db);
@@ -100,4 +96,7 @@ var loop = function() {
     },1500);
 };
 
-loop();
+var db = s_test.testCouchbase(function(err) {
+    if (err) throw err;
+    loop();
+});
