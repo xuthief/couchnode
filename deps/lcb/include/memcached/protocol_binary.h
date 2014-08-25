@@ -171,11 +171,18 @@ extern "C"
 
         PROTOCOL_BINARY_CMD_LAST_RESERVED = 0x8f,
 
+        /* Sets ops */
+        PROTOCOL_BINARY_CMD_SADD = 0xc1,
+        PROTOCOL_BINARY_CMD_SISMEMBER = 0xc2,
+        PROTOCOL_BINARY_CMD_SREMOVE = 0xc3,
+        PROTOCOL_BINARY_CMD_SGET = 0xc4,
+
         /* Queue ops */
         PROTOCOL_BINARY_CMD_LENQUEUE = 0xd1,
         PROTOCOL_BINARY_CMD_LDEQUEUE = 0xd2,
         PROTOCOL_BINARY_CMD_LREMOVE = 0xd3,
         PROTOCOL_BINARY_CMD_LGET = 0xd4,
+
         PROTOCOL_BINARY_CMD_FSET = 0xe1,
 
         /* Scrub the data */

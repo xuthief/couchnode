@@ -114,6 +114,7 @@ public:
     static NAN_METHOD(GetMulti);
     static NAN_METHOD(LdequeueMulti);
     static NAN_METHOD(LgetMulti);
+    static NAN_METHOD(SGetMulti);
     static NAN_METHOD(GetReplicaMulti);
     static NAN_METHOD(LockMulti);
     static NAN_METHOD(SetMulti);
@@ -124,6 +125,9 @@ public:
     static NAN_METHOD(LenqueueMulti);
     static NAN_METHOD(LremoveMulti);
     static NAN_METHOD(RemoveMulti);
+    static NAN_METHOD(SAddMulti);
+    static NAN_METHOD(SRemoveMulti);
+    static NAN_METHOD(SIsmemberMulti);
     static NAN_METHOD(ArithmeticMulti);
     static NAN_METHOD(TouchMulti);
     static NAN_METHOD(UnlockMulti);

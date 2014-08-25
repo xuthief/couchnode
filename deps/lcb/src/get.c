@@ -279,6 +279,9 @@ static lcb_error_t single_get(lcb_t instance,
             case LCB_LDEQUEUE:
                 req.message.header.request.opcode = PROTOCOL_BINARY_CMD_LDEQUEUE;
                 break;
+            case LCB_SGET:
+                req.message.header.request.opcode = PROTOCOL_BINARY_CMD_SGET;
+                break;
             default:
                 req.message.header.request.opcode = PROTOCOL_BINARY_CMD_GET;
                 break;
@@ -359,6 +362,9 @@ static lcb_error_t multi_get(lcb_t instance,
                     break;
                 case LCB_LDEQUEUE:
                     req.message.header.request.opcode = PROTOCOL_BINARY_CMD_LDEQUEUE;
+                    break;
+                case LCB_SGET:
+                    req.message.header.request.opcode = PROTOCOL_BINARY_CMD_SGET;
                     break;
                 default:
                     req.message.header.request.opcode = PROTOCOL_BINARY_CMD_GETQ;

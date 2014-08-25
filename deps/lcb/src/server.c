@@ -98,6 +98,7 @@ static void failout_single_request(lcb_server_t *server,
     case CMD_GET_REPLICA:
     case PROTOCOL_BINARY_CMD_LDEQUEUE:
     case PROTOCOL_BINARY_CMD_LGET:
+    case PROTOCOL_BINARY_CMD_SGET:
         setup_lcb_get_resp_t(&resp.get, keyptr, nkey, NULL, 0, 0, 0, 0);
         TRACE_GET_END(req->request.opaque, ntohs(req->request.vbucket),
                       req->request.opcode, error, &resp.get);
@@ -140,6 +141,9 @@ static void failout_single_request(lcb_server_t *server,
     case PROTOCOL_BINARY_CMD_SET:
     case PROTOCOL_BINARY_CMD_LENQUEUE:
     case PROTOCOL_BINARY_CMD_LREMOVE:
+    case PROTOCOL_BINARY_CMD_SADD:
+    case PROTOCOL_BINARY_CMD_SREMOVE:
+    case PROTOCOL_BINARY_CMD_SISMEMBER:
         setup_lcb_store_resp_t(&resp.store, keyptr, nkey, 0);
         TRACE_STORE_END(req->request.opaque, ntohs(req->request.vbucket),
                         req->request.opcode, error, &resp.store);

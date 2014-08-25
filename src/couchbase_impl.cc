@@ -119,6 +119,10 @@ void CouchbaseImpl::Init(Handle<Object> target)
     NODE_SET_PROTOTYPE_METHOD(t, "lremoveMulti", LremoveMulti);
     NODE_SET_PROTOTYPE_METHOD(t, "ldequeueMulti", LdequeueMulti);
     NODE_SET_PROTOTYPE_METHOD(t, "lgetMulti", LgetMulti);
+    NODE_SET_PROTOTYPE_METHOD(t, "saddMulti", SAddMulti);
+    NODE_SET_PROTOTYPE_METHOD(t, "sremoveMulti", SRemoveMulti);
+    NODE_SET_PROTOTYPE_METHOD(t, "sismemberMulti", SIsmemberMulti);
+    NODE_SET_PROTOTYPE_METHOD(t, "sgetMulti", SGetMulti);
     NODE_SET_PROTOTYPE_METHOD(t, "getMulti", GetMulti);
     NODE_SET_PROTOTYPE_METHOD(t, "getReplicaMulti", GetReplicaMulti);
     NODE_SET_PROTOTYPE_METHOD(t, "touchMulti", TouchMulti);
@@ -435,6 +439,9 @@ DEFINE_STOREOP(Append, LCB_APPEND)
 DEFINE_STOREOP(Prepend, LCB_PREPEND)
 DEFINE_STOREOP(Lenqueue, LCB_LENQUEUE)
 DEFINE_STOREOP(Lremove, LCB_LREMOVE)
+DEFINE_STOREOP(SAdd, LCB_SADD)
+DEFINE_STOREOP(SRemove, LCB_SREMOVE)
+DEFINE_STOREOP(SIsmember, LCB_SISMEMBER)
 
 NAN_METHOD(CouchbaseImpl::GetMulti)
 {
@@ -454,6 +461,13 @@ NAN_METHOD(CouchbaseImpl::LgetMulti)
 {
     NanScope();
     LgetCommand op(args, ARGMODE_MULTI);
+    NanReturnValue(makeOperation(args, op));
+}
+
+NAN_METHOD(CouchbaseImpl::SGetMulti)
+{
+    NanScope();
+    SGetCommand op(args, ARGMODE_MULTI);
     NanReturnValue(makeOperation(args, op));
 }
 

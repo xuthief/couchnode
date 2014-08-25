@@ -872,4 +872,267 @@ lcb_error_t LgetCommand::execute(lcb_t instance)
     return lcb_get(instance, cookie, commands.size(), commands.getList());
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// SADD                                                                     ///
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+bool SAddCommand::handleSingle(Command *p, CommandKey &ki,
+                                Handle<Value> params, unsigned int ix)
+{
+    SAddCommand *ctx = static_cast<SAddCommand *>(p);
+    lcb_store_cmd_t *cmd = ctx->commands.getAt(ix);
+    StoreOptions kOptions;
+
+    if (!params.IsEmpty()) {
+        if (!kOptions.parseObject(params.As<Object>(), ctx->err)) {
+            return false;
+        }
+        kOptions.isInitialized = true;
+
+    } else {
+        ctx->err.eArguments("Must have options for sadd", params);
+        return false;
+    }
+
+    char *vbuf;
+    size_t nvbuf;
+    Handle<Value> s = kOptions.value.v;
+    ki.setKeyV0(cmd);
+
+    ValueFormat::Spec spec;
+    Handle<Value> specObj;
+    if (kOptions.format.isFound()) {
+        specObj = kOptions.format.v;
+    } else {
+        specObj = ctx->globalOptions.format.v;
+    }
+
+    spec = ValueFormat::toSpec(specObj, ctx->err);
+    if (spec == ValueFormat::INVALID) {
+        return false;
+    }
+
+    if (!ValueFormat::encode(s, spec, ctx->bufs,
+                             &cmd->v.v0.flags, &vbuf, &nvbuf, ctx->err)) {
+        return false;
+    }
+
+    cmd->v.v0.bytes = vbuf;
+    cmd->v.v0.nbytes = nvbuf;
+    cmd->v.v0.cas = kOptions.cas.v;
+
+    // exptime
+    if (kOptions.exp.isFound()) {
+        cmd->v.v0.exptime = kOptions.exp.v;
+    } else {
+        cmd->v.v0.exptime = ctx->globalOptions.exp.v;
+    }
+
+    // flags override
+    if (kOptions.flags.isFound()) {
+        cmd->v.v0.flags = kOptions.flags.v;
+    }
+
+    cmd->v.v0.operation = LCB_SADD;
+    return true;
+}
+
+lcb_error_t SAddCommand::execute(lcb_t instance)
+{
+    return lcb_store(instance, cookie, commands.size(), commands.getList());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// SREMOVE                                                                  ///
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+bool SRemoveCommand::handleSingle(Command *p, CommandKey &ki,
+                                Handle<Value> params, unsigned int ix)
+{
+    SRemoveCommand *ctx = static_cast<SRemoveCommand *>(p);
+    lcb_store_cmd_t *cmd = ctx->commands.getAt(ix);
+    StoreOptions kOptions;
+
+    if (!params.IsEmpty()) {
+        if (!kOptions.parseObject(params.As<Object>(), ctx->err)) {
+            return false;
+        }
+        kOptions.isInitialized = true;
+
+    } else {
+        ctx->err.eArguments("Must have options for sremove", params);
+        return false;
+    }
+
+    char *vbuf;
+    size_t nvbuf;
+    Handle<Value> s = kOptions.value.v;
+    ki.setKeyV0(cmd);
+
+    ValueFormat::Spec spec;
+    Handle<Value> specObj;
+    if (kOptions.format.isFound()) {
+        specObj = kOptions.format.v;
+    } else {
+        specObj = ctx->globalOptions.format.v;
+    }
+
+    spec = ValueFormat::toSpec(specObj, ctx->err);
+    if (spec == ValueFormat::INVALID) {
+        return false;
+    }
+
+    if (!ValueFormat::encode(s, spec, ctx->bufs,
+                             &cmd->v.v0.flags, &vbuf, &nvbuf, ctx->err)) {
+        return false;
+    }
+
+    cmd->v.v0.bytes = vbuf;
+    cmd->v.v0.nbytes = nvbuf;
+    cmd->v.v0.cas = kOptions.cas.v;
+
+    // exptime
+    if (kOptions.exp.isFound()) {
+        cmd->v.v0.exptime = kOptions.exp.v;
+    } else {
+        cmd->v.v0.exptime = ctx->globalOptions.exp.v;
+    }
+
+    // flags override
+    if (kOptions.flags.isFound()) {
+        cmd->v.v0.flags = kOptions.flags.v;
+    }
+
+    cmd->v.v0.operation = LCB_SREMOVE;
+    return true;
+}
+
+lcb_error_t SRemoveCommand::execute(lcb_t instance)
+{
+    return lcb_store(instance, cookie, commands.size(), commands.getList());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// SISMEMBER                                                                ///
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+bool SIsmemberCommand::handleSingle(Command *p, CommandKey &ki,
+                                Handle<Value> params, unsigned int ix)
+{
+    SIsmemberCommand *ctx = static_cast<SIsmemberCommand *>(p);
+    lcb_store_cmd_t *cmd = ctx->commands.getAt(ix);
+    StoreOptions kOptions;
+
+    if (!params.IsEmpty()) {
+        if (!kOptions.parseObject(params.As<Object>(), ctx->err)) {
+            return false;
+        }
+        kOptions.isInitialized = true;
+
+    } else {
+        ctx->err.eArguments("Must have options for sismember", params);
+        return false;
+    }
+
+    char *vbuf;
+    size_t nvbuf;
+    Handle<Value> s = kOptions.value.v;
+    ki.setKeyV0(cmd);
+
+    ValueFormat::Spec spec;
+    Handle<Value> specObj;
+    if (kOptions.format.isFound()) {
+        specObj = kOptions.format.v;
+    } else {
+        specObj = ctx->globalOptions.format.v;
+    }
+
+    spec = ValueFormat::toSpec(specObj, ctx->err);
+    if (spec == ValueFormat::INVALID) {
+        return false;
+    }
+
+    if (!ValueFormat::encode(s, spec, ctx->bufs,
+                             &cmd->v.v0.flags, &vbuf, &nvbuf, ctx->err)) {
+        return false;
+    }
+
+    cmd->v.v0.bytes = vbuf;
+    cmd->v.v0.nbytes = nvbuf;
+    cmd->v.v0.cas = kOptions.cas.v;
+
+    // exptime
+    if (kOptions.exp.isFound()) {
+        cmd->v.v0.exptime = kOptions.exp.v;
+    } else {
+        cmd->v.v0.exptime = ctx->globalOptions.exp.v;
+    }
+
+    // flags override
+    if (kOptions.flags.isFound()) {
+        cmd->v.v0.flags = kOptions.flags.v;
+    }
+
+    cmd->v.v0.operation = LCB_SISMEMBER;
+    return true;
+}
+
+lcb_error_t SIsmemberCommand::execute(lcb_t instance)
+{
+    return lcb_store(instance, cookie, commands.size(), commands.getList());
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// Sget                                                                     ///
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+bool SGetCommand::handleSingle(Command *p,
+                              CommandKey &ki,
+                              Handle<Value> params, unsigned int ix)
+{
+    SGetCommand *ctx = static_cast<SGetCommand *>(p);
+    GetOptions kOptions;
+
+    if (params.IsEmpty() == false && params->IsObject()) {
+        if (!kOptions.parseObject(params.As<Object>(), ctx->err)) {
+            return false;
+        }
+    }
+
+    kOptions.merge(ctx->globalOptions);
+
+    lcb_get_cmd_st *cmd = ctx->commands.getAt(ix);
+    ki.setKeyV0(cmd);
+
+    if (kOptions.lockTime.isFound()) {
+        cmd->v.v0.exptime = kOptions.lockTime.v;
+        cmd->v.v0.lock = 1;
+
+    } else {
+        cmd->v.v0.exptime = kOptions.expTime.v;
+    }
+
+    cmd->v.v0.gettype = LCB_SGET;
+
+    if (kOptions.format.isFound()) {
+        ValueFormat::Spec spec = ValueFormat::toSpec(kOptions.format.v, ctx->err);
+        // ignore auto so the handler uses the incoming flags
+        if (spec != ValueFormat::AUTO) {
+            ctx->setCookieKeyOption(ki.getObject(), Number::New(spec));
+        }
+    }
+
+    return true;
+}
+
+lcb_error_t SGetCommand::execute(lcb_t instance)
+{
+    return lcb_get(instance, cookie, commands.size(), commands.getList());
+}
+
 }

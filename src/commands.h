@@ -538,6 +538,98 @@ protected:
         return commands.initialize(keys.size());
     }
 };
+
+// sets commands
+class SAddCommand: public Command
+{
+public:
+    SAddCommand(_NAN_METHOD_ARGS, lcb_storage_t sop, int mode)
+        : Command(args, mode), op(sop) { }
+
+    static bool handleSingle(Command*, CommandKey&,
+                             Handle<Value>, unsigned int);
+
+    lcb_error_t execute(lcb_t);
+    virtual Command* copy() { return new SAddCommand(*this); }
+
+protected:
+    lcb_storage_t op;
+    CommandList<lcb_store_cmd_t> commands;
+    StoreOptions globalOptions;
+    ItemHandler getHandler() const { return handleSingle; }
+    Parameters* getParams() { return &globalOptions; }
+    virtual bool initCommandList() {
+        return commands.initialize(keys.size());
+    }
+};
+
+class SRemoveCommand : public Command
+{
+public:
+    SRemoveCommand(_NAN_METHOD_ARGS, lcb_storage_t sop, int mode)
+        : Command(args, mode), op(sop) { }
+
+    static bool handleSingle(Command*, CommandKey&,
+                             Handle<Value>, unsigned int);
+
+    lcb_error_t execute(lcb_t);
+    virtual Command* copy() { return new SRemoveCommand(*this); }
+
+protected:
+    lcb_storage_t op;
+    CommandList<lcb_store_cmd_t> commands;
+    StoreOptions globalOptions;
+    ItemHandler getHandler() const { return handleSingle; }
+    Parameters* getParams() { return &globalOptions; }
+    virtual bool initCommandList() {
+        return commands.initialize(keys.size());
+    }
+};
+
+class SIsmemberCommand : public Command
+{
+public:
+    SIsmemberCommand(_NAN_METHOD_ARGS, lcb_storage_t sop, int mode)
+        : Command(args, mode), op(sop) { }
+
+    static bool handleSingle(Command*, CommandKey&,
+                             Handle<Value>, unsigned int);
+
+    lcb_error_t execute(lcb_t);
+    virtual Command* copy() { return new SIsmemberCommand(*this); }
+
+protected:
+    lcb_storage_t op;
+    CommandList<lcb_store_cmd_t> commands;
+    StoreOptions globalOptions;
+    ItemHandler getHandler() const { return handleSingle; }
+    Parameters* getParams() { return &globalOptions; }
+    virtual bool initCommandList() {
+        return commands.initialize(keys.size());
+    }
+};
+
+
+class SGetCommand : public Command
+{
+
+public:
+    CTOR_COMMON(SGetCommand)
+    lcb_error_t execute(lcb_t);
+    static bool handleSingle(Command *,
+                             CommandKey&, Handle<Value>, unsigned int);
+
+    virtual Command* copy() { return new SGetCommand(*this); }
+
+protected:
+    Parameters* getParams() { return &globalOptions; }
+    GetOptions globalOptions;
+    CommandList<lcb_get_cmd_t> commands;
+    ItemHandler getHandler() const { return handleSingle; }
+    virtual bool initCommandList() {
+        return commands.initialize(keys.size());
+    }
+};
 }
 
 #endif

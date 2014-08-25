@@ -107,6 +107,15 @@ lcb_error_t lcb_store(lcb_t instance,
         case LCB_LREMOVE:
             req.message.header.request.opcode = PROTOCOL_BINARY_CMD_LREMOVE;
             break;
+        case LCB_SADD:
+            req.message.header.request.opcode = PROTOCOL_BINARY_CMD_SADD;
+            break;
+        case LCB_SREMOVE:
+            req.message.header.request.opcode = PROTOCOL_BINARY_CMD_SREMOVE;
+            break;
+        case LCB_SISMEMBER:
+            req.message.header.request.opcode = PROTOCOL_BINARY_CMD_SISMEMBER;
+            break;
         default:
             /* We were given an unknown storage operation. */
             return lcb_synchandler_return(instance,

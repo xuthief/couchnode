@@ -79,6 +79,11 @@ extern "C" {
         LCB_LENQUEUE = 0x07,
         LCB_LREMOVE = 0x08,
 
+        /** For sets ops */
+        LCB_SADD = 0x09,
+        LCB_SREMOVE = 0x0a,
+        LCB_SISMEMBER = 0x0b,
+
     } lcb_storage_t;
 
     /**

@@ -209,7 +209,8 @@ extern "C" {
     typedef enum {
         LCB_GET = 0x00,
         LCB_LGET = 0x01,
-        LCB_LDEQUEUE = 0x02
+        LCB_LDEQUEUE = 0x02,
+        LCB_SGET = 0x03,
     } lcb_get_t;
 
 #define LCB_G_C_ST_ID 2
