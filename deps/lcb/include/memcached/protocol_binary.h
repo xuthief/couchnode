@@ -172,10 +172,10 @@ extern "C"
         PROTOCOL_BINARY_CMD_LAST_RESERVED = 0x8f,
 
         /* Sets ops */
-        PROTOCOL_BINARY_CMD_SADD = 0xc1,
+        PROTOCOL_BINARY_CMD_SADD = 0xc0,
+        PROTOCOL_BINARY_CMD_SREMOVE = 0xc1,
         PROTOCOL_BINARY_CMD_SISMEMBER = 0xc2,
-        PROTOCOL_BINARY_CMD_SREMOVE = 0xc3,
-        PROTOCOL_BINARY_CMD_SGET = 0xc4,
+        PROTOCOL_BINARY_CMD_SGET = 0xc3,
 
         /* Queue ops */
         PROTOCOL_BINARY_CMD_LENQUEUE = 0xd1,
