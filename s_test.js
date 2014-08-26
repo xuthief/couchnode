@@ -16,7 +16,7 @@ if (fs.existsSync(configFilename)) {
 } else {
   config = {
     mock : false,
-    host : 'localhost:8091',
+    host : '192.168.2.155:8091',
     queryhosts : '',
     bucket : 'default',
     operationTimeout : 20000,
